@@ -24,7 +24,7 @@ class omegga:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "ssh://git@gitlab.pnnl.gov:2222/sfa-omegga/omegga.git"
-    GIT_COMMIT_HASH = "ce2e98f44ce531d6c9cf695c6d61aec2d56dea29"
+    GIT_COMMIT_HASH = "240991b50a1ed5f30d97a438bcb23d17323fcd73"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
