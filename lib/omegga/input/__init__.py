@@ -5,6 +5,19 @@ from pandas import DataFrame
 
 ReactionRelations = namedtuple('ReactionRelations', ['reaction', 'protein', 'transcript', 'metabolite'])
 
+def _build_cpd_to_rxn():
+    cpd_to_rxn = {}
+    with open('/kb/module/data/reactions.tsv') as rxn_fd:
+        rxn_reader = csv.DictReader(rxn_fd, delimiter='\t')
+        for rxn_dict in rxn_reader:
+            for cpd_id in rxn_dict.get('compound_ids').split(';'):
+                if cpd_id not in cpd_to_rxn:
+                    cpd_to_rxn[cpd_id] = []
+                cpd_to_rxn[cpd_id].append(rxn_dict.get('id'))
+    return cpd_to_rxn
+
+CPD_TO_RXN = _build_cpd_to_rxn()
+
 def generate_input(genome_ref, metabolomics_ref, events) -> DataFrame:
     data = {}
     # loop over genome proteins and transcripts
@@ -18,17 +31,10 @@ def generate_input(genome_ref, metabolomics_ref, events) -> DataFrame:
                     data[rxn_id].protein.append(protein.get('id'))
                     data[rxn_id].transcript.append(protein.get('parent_mrna'))
     
-    cpd_to_rxn = {}
-    with open('/kb/module/data/reactions.tsv') as rxn_fd:
-        rxn_reader = csv.DictReader(rxn_fd, delimiter='\t')
-        for rxn_dict in rxn_reader:
-            for cpd_id in rxn_dict.get('compound_ids').split(';'):
-                if cpd_id not in cpd_to_rxn:
-                    cpd_to_rxn[cpd_id] = []
-                cpd_to_rxn[cpd_id].append(rxn_dict.get('id'))
+
     for cpd_id in metabolomics_ref.get('data').get('data').get('row_ids'):
-        if cpd_id in cpd_to_rxn:
-            for rxn_id in cpd_to_rxn[cpd_id]:
+        if cpd_id in CPD_TO_RXN:
+            for rxn_id in CPD_TO_RXN[cpd_id]:
                 if rxn_id not in data:
                     data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
                 data[rxn_id].metabolite.append(cpd_id)
