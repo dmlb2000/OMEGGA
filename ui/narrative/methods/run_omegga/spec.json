@@ -9,16 +9,27 @@
         "input": null,
         "output": null
     },
-    "parameters": [ 
+    "parameters": [
         {
-            "id": "parameter_1",
-            "optional": true,
+            "id": "genome_ref",
+            "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [ "" ],
             "field_type": "text",
             "text_options": {
-                "valid_ws_types": [ ]
+                "valid_ws_types": [ "KBaseGenomes.Genome" ]
+            }
+        },
+        {
+            "id": "metabolomics_ref",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseMatrices.ChemicalAbundanceMatrix" ]
             }
         }
     ],
@@ -35,8 +46,11 @@
                     "narrative_system_variable": "workspace_id",
                     "target_property": "workspace_id"
                 },{
-                    "input_parameter": "parameter_1",
-                    "target_property": "parameter_1"
+                    "input_parameter": "genome_ref",
+                    "target_property": "genome_ref"
+                },{
+                    "input_parameter": "metabolomics_ref",
+                    "target_property": "metabolomics_ref"
                 }
             ],
             "output_mapping": [

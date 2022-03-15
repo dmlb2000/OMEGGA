@@ -4,6 +4,8 @@ import logging
 import os
 
 from installed_clients.KBaseReportClient import KBaseReport
+from installed_clients.DataFileUtilClient import DataFileUtil
+from installed_clients.annotation_ontology_apiClient import annotation_ontology_api
 #END_HEADER
 
 
@@ -24,7 +26,7 @@ class omegga:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "ssh://git@gitlab.pnnl.gov:2222/sfa-omegga/omegga.git"
-    GIT_COMMIT_HASH = "240991b50a1ed5f30d97a438bcb23d17323fcd73"
+    GIT_COMMIT_HASH = "64736ef69ba5f23fdc138236d2ec76253c71ff36"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -35,6 +37,7 @@ class omegga:
         #BEGIN_CONSTRUCTOR
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.shared_folder = config['scratch']
+        self.workspace_url = config['workspace-url']
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
         #END_CONSTRUCTOR
@@ -51,10 +54,25 @@ class omegga:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_omegga
+        dfu = DataFileUtil(self.callback_url)
+        genome_ref, metabolomics_ref = dfu.get_objects({'object_refs':
+            [params['genome_ref'], params['metabolomics_ref']]
+        })['data']
+        
+        # When the app becomes released production 'service_ver' will be removed...
+        events = annotation_ontology_api(self.callback_url, service_ver='dev').get_annotation_ontology_events(params={
+                "input_ref": params['genome_ref'],
+                "input_workspace": params['workspace_name'],
+                "workspace-url"  : self.workspace_url
+        })
         report = KBaseReport(self.callback_url)
-        report_info = report.create({'report': {'objects_created':[],
-                                                'text_message': params['parameter_1']},
-                                                'workspace_name': params['workspace_name']})
+        report_info = report.create({
+            'report': {
+                'objects_created':[],
+                'text_message': f"{params['genome_ref']} {params['metabolomics_ref']}"
+            },
+            'workspace_name': params['workspace_name']
+        })
         output = {
             'report_name': report_info['name'],
             'report_ref': report_info['ref'],

@@ -8,6 +8,7 @@ MAINTAINER KBase Developer
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONVER=3.8.12
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get -y install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev curl libbz2-dev vim && \
     apt-get clean all
 RUN curl -Lo - https://www.python.org/ftp/python/${PYTHONVER}/Python-${PYTHONVER}.tgz | tar -C /usr/src -xzf -

@@ -63,5 +63,8 @@ class omeggaTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.run_omegga(self.ctx, {'workspace_name': self.wsName,
-                                                             'parameter_1': 'Hello World!'})
+        ret = self.serviceImpl.run_omegga(self.ctx, {
+            'workspace_name': self.wsName,
+            'genome_ref': '65432/14/2',
+            'metabolomics_ref': '65432/19/4',
+        })
