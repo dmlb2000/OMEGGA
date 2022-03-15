@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    table.omegga {
+        border: thin solid lightgray;
+      }
+      
+      table.omegga th,
+      table.omegga td {
+        border: thin solid lightgray;
+        min-width: 75px;
+        text-align: center;
+        padding: 5px;
+      }
+</style>
+</head>
+<body>
+  <table class="omegga collapse">
+    <thead>
+      <tr>
+        {% for c in columns %}
+        <th>{{ c }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        {% for k, v in row.items() %}
+        <td><div>{{ v }}</div></td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

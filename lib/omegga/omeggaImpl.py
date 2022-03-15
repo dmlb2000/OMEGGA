@@ -6,6 +6,8 @@ import os
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.annotation_ontology_apiClient import annotation_ontology_api
+from .report import generate_report
+from .input import generate_input
 #END_HEADER
 
 
@@ -38,6 +40,7 @@ class omegga:
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.shared_folder = config['scratch']
         self.workspace_url = config['workspace-url']
+        self.scratch = config['scratch']
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
         #END_CONSTRUCTOR
@@ -54,7 +57,6 @@ class omegga:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_omegga
-        print(self.callback_url)
         dfu = DataFileUtil(self.callback_url)
         genome_ref, metabolomics_ref = dfu.get_objects({'object_refs':
             [params['genome_ref'], params['metabolomics_ref']]
@@ -66,13 +68,16 @@ class omegga:
                 "input_workspace": params['workspace_name'],
                 "workspace-url"  : self.workspace_url
         })
+        input_df = generate_input(genome_ref, metabolomics_ref, events)
         report = KBaseReport(self.callback_url)
-        report_info = report.create({
-            'report': {
-                'objects_created':[],
-                'text_message': f"{params['genome_ref']} {params['metabolomics_ref']}"
-            },
-            'workspace_name': params['workspace_name']
+        report_info = report.create_extended_report({
+            'objects_created':[],
+            'html_links': generate_report(dfu, self.scratch, {
+                'rows': input_df.to_dict(orient='records'),
+                'columns': input_df.columns.to_list()
+            }),
+            'direct_html_link_index': 0,
+            'workspace_name': params['workspace_name'],
         })
         output = {
             'report_name': report_info['name'],
@@ -81,12 +86,12 @@ class omegga:
         #END run_omegga
 
         # At some point might do deeper type checking...
-        if not isinstance(output, dict):
+        if not isinstance(output, dict):  # pragma: no cover
             raise ValueError('Method run_omegga return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]
-    def status(self, ctx):
+    def status(self, ctx):  # pragma: no cover
         #BEGIN_STATUS
         returnVal = {'state': "OK",
                      'message': "",

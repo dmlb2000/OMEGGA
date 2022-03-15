@@ -17,9 +17,10 @@ RUN cd /usr/src/Python-${PYTHONVER} && \
     make -j4 && \
     make altinstall
 RUN /usr/local/bin/python3.8 -m pip install --upgrade pip setuptools wheel && \
-    /usr/local/bin/python3.8 -m pip install jinja2 numpy requests sphinx uwsgi nose jsonrpc jsonrpcbase coverage
+    /usr/local/bin/python3.8 -m pip install jinja2 numpy requests sphinx uwsgi nose jsonrpc jsonrpcbase coverage jinja2 pandas
 # -----------------------------------------
-
+RUN mkdir -p /kb/module/data
+RUN curl -Lo /kb/module/data/reactions.tsv https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/master/Biochemistry/reactions.tsv
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 RUN chmod -R a+rw /kb/module
