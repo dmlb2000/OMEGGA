@@ -24,20 +24,16 @@ class annotation_ontology_api(object):
             password=None, token=None, ignore_authrc=False,
             trust_all_ssl_certificates=False,
             auth_svc='https://ci.kbase.us/services/auth/api/legacy/KBase/Sessions/Login',
-            service_ver='release',
-            async_job_check_time_ms=100, async_job_check_time_scale_percent=150, 
-            async_job_check_max_time_ms=300000):
+            service_ver='release'):
         if url is None:
-            raise ValueError('A url is required')
+            url = 'https://kbase.us/services/service_wizard'
         self._service_ver = service_ver
         self._client = _BaseClient(
             url, timeout=timeout, user_id=user_id, password=password,
             token=token, ignore_authrc=ignore_authrc,
             trust_all_ssl_certificates=trust_all_ssl_certificates,
             auth_svc=auth_svc,
-            async_job_check_time_ms=async_job_check_time_ms,
-            async_job_check_time_scale_percent=async_job_check_time_scale_percent,
-            async_job_check_max_time_ms=async_job_check_max_time_ms)
+            lookup_url=True)
 
     def get_annotation_ontology_events(self, params, context=None):
         """
@@ -59,8 +55,8 @@ class annotation_ontology_api(object):
            parameter "modelseed_ids" of list of String, parameter "evidence"
            of String
         """
-        return self._client.run_job('annotation_ontology_api.get_annotation_ontology_events',
-                                    [params], self._service_ver, context)
+        return self._client.call_method('annotation_ontology_api.get_annotation_ontology_events',
+                                        [params], self._service_ver, context)
 
     def add_annotation_ontology_events(self, params, context=None):
         """
@@ -82,9 +78,9 @@ class annotation_ontology_api(object):
         :returns: instance of type "AddAnnotationOntologyEventsOutput" ->
            structure: parameter "output_ref" of String
         """
-        return self._client.run_job('annotation_ontology_api.add_annotation_ontology_events',
-                                    [params], self._service_ver, context)
+        return self._client.call_method('annotation_ontology_api.add_annotation_ontology_events',
+                                        [params], self._service_ver, context)
 
     def status(self, context=None):
-        return self._client.run_job('annotation_ontology_api.status',
-                                    [], self._service_ver, context)
+        return self._client.call_method('annotation_ontology_api.status',
+                                        [], self._service_ver, context)

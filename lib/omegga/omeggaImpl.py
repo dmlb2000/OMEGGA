@@ -54,13 +54,14 @@ class omegga:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_omegga
+        print(self.callback_url)
         dfu = DataFileUtil(self.callback_url)
         genome_ref, metabolomics_ref = dfu.get_objects({'object_refs':
             [params['genome_ref'], params['metabolomics_ref']]
         })['data']
         
         # When the app becomes released production 'service_ver' will be removed...
-        events = annotation_ontology_api(self.callback_url, service_ver='dev').get_annotation_ontology_events(params={
+        events = annotation_ontology_api(service_ver='dev').get_annotation_ontology_events(params={
                 "input_ref": params['genome_ref'],
                 "input_workspace": params['workspace_name'],
                 "workspace-url"  : self.workspace_url
