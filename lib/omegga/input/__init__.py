@@ -30,17 +30,16 @@ def generate_input(genome_ref, metabolomics_ref, events) -> DataFrame:
                         data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
                     data[rxn_id].protein.append(protein.get('id'))
                     data[rxn_id].transcript.append(protein.get('parent_mrna'))
-    
-
     for cpd_id in metabolomics_ref.get('data').get('data').get('row_ids'):
         if cpd_id in CPD_TO_RXN:
             for rxn_id in CPD_TO_RXN[cpd_id]:
                 if rxn_id not in data:
                     data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
                 data[rxn_id].metabolite.append(cpd_id)
+    data_list = list(data.values())
     return DataFrame({
-        'reaction': [rxn.reaction for rxn in data.values()],
-        'protein': [';'.join(rxn.protein) for rxn in data.values()],
-        'transcript': [';'.join(rxn.transcript) for rxn in data.values()],
-        'metabolite': [';'.join(rxn.metabolite) for rxn in data.values()],
+        'reaction': [rxn.reaction for rxn in data_list],
+        'protein': [';'.join(rxn.protein) for rxn in data_list],
+        'transcript': [';'.join(rxn.transcript) for rxn in data_list],
+        'metabolite': [';'.join(rxn.metabolite) for rxn in data_list],
     })
