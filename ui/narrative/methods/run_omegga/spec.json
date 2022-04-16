@@ -31,6 +31,28 @@
             "text_options": {
                 "valid_ws_types": [ "KBaseMatrices.ChemicalAbundanceMatrix" ]
             }
+        },
+        {
+            "id" : "staging_file_path_proteins",
+            "optional" : false,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "" ],
+            "field_type" : "dynamic_dropdown",
+            "dynamic_dropdown_options" : {
+                "data_source": "ftp_staging"
+            }
+        },
+        {
+            "id" : "staging_file_path_transcripts",
+            "optional" : false,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "" ],
+            "field_type" : "dynamic_dropdown",
+            "dynamic_dropdown_options" : {
+                "data_source": "ftp_staging"
+            }
         }
     ],
     "behavior": {
@@ -51,6 +73,12 @@
                 },{
                     "input_parameter": "metabolomics_ref",
                     "target_property": "metabolomics_ref"
+                }, {
+                    "input_parameter": "staging_file_path_proteins",
+                    "target_property": "staging_file_path_proteins"
+                }, {
+                    "input_parameter": "staging_file_path_transcripts",
+                    "target_property": "staging_file_path_transcripts"
                 }
             ],
             "output_mapping": [

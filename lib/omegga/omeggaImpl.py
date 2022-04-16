@@ -61,6 +61,16 @@ class omegga:
         genome_ref, metabolomics_ref = dfu.get_objects({'object_refs':
             [params['genome_ref'], params['metabolomics_ref']]
         })['data']
+        protein_reaction_file_path = None
+        if 'staging_file_path_proteins' in params:
+            protein_reaction_file_path = dfu.download_staging_file({
+                "staging_file_subdir_path": params['staging_file_path_proteins']
+            })
+        transcript_reaction_file_path = None
+        if 'staging_file_path_transcripts' in params:
+            transcript_reaction_file_path = dfu.download_staging_file({
+                "staging_file_subdir_path": params['staging_file_path_transcripts']
+            })
         
         # When the app becomes released production 'service_ver' will be removed...
         events = annotation_ontology_api(service_ver='dev').get_annotation_ontology_events(params={
