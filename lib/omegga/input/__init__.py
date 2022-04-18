@@ -18,7 +18,7 @@ def _build_cpd_to_rxn():
 
 CPD_TO_RXN = _build_cpd_to_rxn()
 
-def generate_input(genome_ref, metabolomics_ref, events) -> DataFrame:
+def generate_input(genome_ref, metabolomics_ref, events, transcript_reaction_file_path, protein_reaction_file_path) -> DataFrame:
     data = {}
     # loop over genome proteins and transcripts
     for protein in genome_ref.get('data').get('cdss'):
@@ -30,6 +30,20 @@ def generate_input(genome_ref, metabolomics_ref, events) -> DataFrame:
                         data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
                     data[rxn_id].protein.append(protein.get('id'))
                     data[rxn_id].transcript.append(protein.get('parent_mrna'))
+    with open(protein_reaction_file_path, 'r') as rfd:
+        reader = csv.DictReader(rfd)
+        for row in reader:
+            rxn_id = row.get('reaction_id')
+            if rxn_id not in data:
+                data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
+            data[rxn_id].protein.append(row.get('protein_id'))
+    with open(transcript_reaction_file_path, 'r') as rfd:
+        reader = csv.DictReader(rfd)
+        for row in reader:
+            rxn_id = row.get('reaction_id')
+            if rxn_id not in data:
+                data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
+            data[rxn_id].transcript.append(row.get('transcript_id'))
     for cpd_id in metabolomics_ref.get('data').get('data').get('row_ids'):
         if cpd_id in CPD_TO_RXN:
             for rxn_id in CPD_TO_RXN[cpd_id]:

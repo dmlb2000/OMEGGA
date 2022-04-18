@@ -2,6 +2,7 @@
 #BEGIN_HEADER
 import logging
 import os
+import requests
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
@@ -41,6 +42,7 @@ class omegga:
         self.shared_folder = config['scratch']
         self.workspace_url = config['workspace-url']
         self.scratch = config['scratch']
+        self.dfu = DataFileUtil(self.callback_url)
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
         #END_CONSTRUCTOR
@@ -57,18 +59,18 @@ class omegga:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_omegga
-        dfu = DataFileUtil(self.callback_url)
-        genome_ref, metabolomics_ref = dfu.get_objects({'object_refs':
+        
+        genome_ref, metabolomics_ref = self.dfu.get_objects({'object_refs':
             [params['genome_ref'], params['metabolomics_ref']]
         })['data']
         protein_reaction_file_path = None
         if 'staging_file_path_proteins' in params:
-            protein_reaction_file_path = dfu.download_staging_file({
+            protein_reaction_file_path = self.dfu.download_staging_file({
                 "staging_file_subdir_path": params['staging_file_path_proteins']
             })
         transcript_reaction_file_path = None
         if 'staging_file_path_transcripts' in params:
-            transcript_reaction_file_path = dfu.download_staging_file({
+            transcript_reaction_file_path = self.dfu.download_staging_file({
                 "staging_file_subdir_path": params['staging_file_path_transcripts']
             })
         
@@ -78,11 +80,11 @@ class omegga:
                 "input_workspace": params['workspace_name'],
                 "workspace-url"  : self.workspace_url
         })
-        input_df = generate_input(genome_ref, metabolomics_ref, events)
+        input_df = generate_input(genome_ref, metabolomics_ref, events, transcript_reaction_file_path, protein_reaction_file_path)
         report = KBaseReport(self.callback_url)
         report_info = report.create_extended_report({
             'objects_created':[],
-            'html_links': generate_report(dfu, self.scratch, {
+            'html_links': generate_report(self.dfu, self.scratch, {
                 'rows': input_df.to_dict(orient='records'),
                 'columns': input_df.columns.to_list()
             }),
