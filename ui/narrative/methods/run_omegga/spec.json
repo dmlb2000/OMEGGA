@@ -33,25 +33,25 @@
             }
         },
         {
-            "id" : "staging_file_path_proteins",
-            "optional" : false,
-            "advanced" : false,
-            "allow_multiple" : false,
-            "default_values" : [ "" ],
-            "field_type" : "dynamic_dropdown",
-            "dynamic_dropdown_options" : {
-                "data_source": "ftp_staging"
+            "id": "protein_expressionmatrix_ref",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseFeatureValues.ExpressionMatrix" ]
             }
         },
         {
-            "id" : "staging_file_path_transcripts",
-            "optional" : false,
-            "advanced" : false,
-            "allow_multiple" : false,
-            "default_values" : [ "" ],
-            "field_type" : "dynamic_dropdown",
-            "dynamic_dropdown_options" : {
-                "data_source": "ftp_staging"
+            "id": "transcript_expressionmatrix_ref",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseFeatureValues.ExpressionMatrix" ]
             }
         }
     ],
@@ -74,11 +74,11 @@
                     "input_parameter": "metabolomics_ref",
                     "target_property": "metabolomics_ref"
                 }, {
-                    "input_parameter": "staging_file_path_proteins",
-                    "target_property": "staging_file_path_proteins"
+                    "input_parameter": "protein_expressionmatrix_ref",
+                    "target_property": "protein_expressionmatrix_ref"
                 }, {
-                    "input_parameter": "staging_file_path_transcripts",
-                    "target_property": "staging_file_path_transcripts"
+                    "input_parameter": "transcript_expressionmatrix_ref",
+                    "target_property": "transcript_expressionmatrix_ref"
                 }
             ],
             "output_mapping": [

@@ -63,16 +63,16 @@ class omegga:
         genome_ref, metabolomics_ref = self.dfu.get_objects({'object_refs':
             [params['genome_ref'], params['metabolomics_ref']]
         })['data']
-        protein_reaction_file_path = None
-        if 'staging_file_path_proteins' in params:
-            protein_reaction_file_path = self.dfu.download_staging_file({
-                "staging_file_subdir_path": params['staging_file_path_proteins']
-            })
-        transcript_reaction_file_path = None
-        if 'staging_file_path_transcripts' in params:
-            transcript_reaction_file_path = self.dfu.download_staging_file({
-                "staging_file_subdir_path": params['staging_file_path_transcripts']
-            })
+        protein_expressionmatrix_ref = None
+        if 'protein_expressionmatrix_ref' in params:
+            protein_expressionmatrix_ref = self.dfu.get_objects({'object_refs':
+                [params['protein_expressionmatrix_ref']]
+            })['data'][0]
+        transcript_expressionmatrix_ref = None
+        if 'transcript_expressionmatrix_ref' in params:
+            transcript_expressionmatrix_ref = self.dfu.get_objects({'object_refs':
+                [params['transcript_expressionmatrix_ref']]
+            })['data'][0]
         
         # When the app becomes released production 'service_ver' will be removed...
         events = annotation_ontology_api(service_ver='dev').get_annotation_ontology_events(params={
@@ -80,7 +80,7 @@ class omegga:
                 "input_workspace": params['workspace_name'],
                 "workspace-url"  : self.workspace_url
         })
-        input_df = generate_input(genome_ref, metabolomics_ref, events, transcript_reaction_file_path, protein_reaction_file_path)
+        input_df = generate_input(genome_ref, metabolomics_ref, events, transcript_expressionmatrix_ref, protein_expressionmatrix_ref)
         report = KBaseReport(self.callback_url)
         report_info = report.create_extended_report({
             'objects_created':[],

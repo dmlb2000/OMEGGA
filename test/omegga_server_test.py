@@ -65,18 +65,10 @@ class omeggaTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
-        print('='*80)
-        print(self.scratch)
-        self.serviceImpl.dfu.download_staging_file = MagicMock(
-            side_effect=[
-                '/kb/module/test/test_data/protein_reaction_map.csv',
-                '/kb/module/test/test_data/transcript_reaction_map.csv'
-            ]
-        )
         ret = self.serviceImpl.run_omegga(self.ctx, {
             'workspace_name': self.wsName,
-            'genome_ref': '66294/5/3',
-            'metabolomics_ref': '65432/19/4',
-            'staging_file_path_proteins': 'protein_reaction_map.csv',
-            'staging_file_path_transcripts': 'transcript_reaction_map.csv',
+            'genome_ref': '66791/3/3',
+            'metabolomics_ref': '66791/6/1',
+            'protein_expressionmatrix_ref': '66791/13/1',
+            'transcript_expressionmatrix_ref': '66791/14/1',
         })

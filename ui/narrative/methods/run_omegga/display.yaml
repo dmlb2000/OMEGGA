@@ -27,12 +27,12 @@ parameters:
     metabolomics_ref:
         ui-name: Metabolomics
         short-hint: Metabolomics Chemical Abundance Matrix.
-    staging_file_path_proteins:
-        ui-name : File path mapping Proteins to Reactions.
-        short-hint : The staging file path mapping Proteins to Reactions.
-    staging_file_path_transcripts:
-        ui-name : File path mapping Transcripts to Reactions.
-        short-hint : The staging file path mapping Transcripts to Reactions.
+    protein_expressionmatrix_ref:
+        ui-name: Expression Matrix
+        short-hint: Expression matrix linking proteins to reactions.
+    transcript_expressionmatrix_ref:
+        ui-name: Expression Matrix
+        short-hint: Expression matrix linking transcripts to reactions.
 
 description : |
     <p>OMEGGA enables automated reconstruction of high-quality network

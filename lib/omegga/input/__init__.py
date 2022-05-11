@@ -18,7 +18,7 @@ def _build_cpd_to_rxn():
 
 CPD_TO_RXN = _build_cpd_to_rxn()
 
-def generate_input(genome_ref, metabolomics_ref, events, transcript_reaction_file_path, protein_reaction_file_path) -> DataFrame:
+def generate_input(genome_ref, metabolomics_ref, events, transcript_expressionmatrix_ref, protein_expressionmatrix_ref) -> DataFrame:
     data = {}
     # loop over genome proteins and transcripts
     for protein in genome_ref.get('data').get('cdss'):
@@ -30,20 +30,24 @@ def generate_input(genome_ref, metabolomics_ref, events, transcript_reaction_fil
                         data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
                     data[rxn_id].protein.append(protein.get('id'))
                     data[rxn_id].transcript.append(protein.get('parent_mrna'))
-    with open(protein_reaction_file_path, 'r') as rfd:
-        reader = csv.DictReader(rfd)
-        for row in reader:
-            rxn_id = row.get('reaction_id')
-            if rxn_id not in data:
-                data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
-            data[rxn_id].protein.append(row.get('protein_id'))
-    with open(transcript_reaction_file_path, 'r') as rfd:
-        reader = csv.DictReader(rfd)
-        for row in reader:
-            rxn_id = row.get('reaction_id')
-            if rxn_id not in data:
-                data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
-            data[rxn_id].transcript.append(row.get('transcript_id'))
+    transcript_data = transcript_expressionmatrix_ref.get('data').get('data')
+    for rxn_index in range(len(transcript_data.get('row_ids'))):
+        for ts_index in range(len(transcript_data.get('col_ids'))):
+            rxn_id = transcript_data.get('row_ids')[rxn_index]
+            value = transcript_data.get('values')[rxn_index][ts_index]
+            if value > 0:
+                if rxn_id not in data:
+                    data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
+                data[rxn_id].transcript.append(transcript_data.get('col_ids')[ts_index])
+    protein_data = protein_expressionmatrix_ref.get('data').get('data')
+    for rxn_index in range(len(protein_data.get('row_ids'))):
+        for protein_index in range(len(protein_data.get('col_ids'))):
+            rxn_id = protein_data.get('row_ids')[rxn_index]
+            value = protein_data.get('values')[rxn_index][protein_index]
+            if value > 0:
+                if rxn_id not in data:
+                    data[rxn_id] = ReactionRelations(rxn_id, [], [], [])
+                data[rxn_id].protein.append(protein_data.get('col_ids')[protein_index])
     for cpd_id in metabolomics_ref.get('data').get('data').get('row_ids'):
         if cpd_id in CPD_TO_RXN:
             for rxn_id in CPD_TO_RXN[cpd_id]:
